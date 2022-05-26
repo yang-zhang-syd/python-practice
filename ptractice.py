@@ -2,11 +2,16 @@ from typing import List
 import collections
 
 class Solution:
-    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         # setup connections between words
         dic = {}
         nodesDic = {}
-        nodes = map(lambda x: [x, False, 0, False, None, []], wordList)
+        # node[0] : word
+        # node[1] : visited flag
+        # node[2] : level in BFS
+        # node[3] : node added to connected array
+        # node[4] : path from begin word
+        nodes = map(lambda x: [x, False, 0, False, []], wordList)
         for node in nodes:
             nodesDic[node[0]] = node
         
@@ -20,16 +25,16 @@ class Solution:
                 
         # search for end word
         count = 0
-        connected = self.findConnectedWords([beginWord, False, 0, False, None, []], dic, 1, endWord)
+        connected = self.findConnectedWords([beginWord, False, 0, False, []], dic, 1, endWord)
         paths = []
         while connected:
             first = connected.pop(0)
             first[1] = True
             level = first[2]
-            if len(paths) > 0 and len(paths[0]) < level:
+            if len(paths) > 0 and len(paths[0]) <= level:
                 break
             if first[0] == endWord:
-                paths.append(first[5] + [first[0]])
+                paths.append(first[4] + [first[0]])
 
             connected1 = self.findConnectedWords(first, dic, level + 1, endWord)
             connected += connected1
@@ -43,14 +48,16 @@ class Solution:
             key = word[:i] + '*' + word[i+1:]
             if key in dic:
                 for candidate in dic[key]:
-                    if not candidate[1] and candidate[0] != word and (not candidate[3] or candidate[0] == endWord):
+                    if not candidate[1] and candidate[0] != word and not candidate[3]:
                         candidate[2] = level
                         candidate[3] = True
-                        candidate[5] = node[5] + [word]
-                        candidate[4] = node
+                        candidate[4] = node[4] + [word]
                         candidates.append(candidate)
+                    elif not candidate[1] and candidate[0] != word and candidate[3]:
+                        # this is the end node and it was added to the waiting list before
+                        candidates.append([candidate[0], candidate[1], level, True, node[4] + [word]])
         return candidates
 
 s = Solution()
-r = s.ladderLength('hit', 'cog', ["hot","dot","dog","lot","log","cog"])
+r = s.findLadders('a', 'c', ["a","b","c"])
 print(r)
