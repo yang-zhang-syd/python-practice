@@ -31,7 +31,7 @@ class Solution:
                 if target - sum > 0:
                     j += 1
                 else:
-                    k += 1
+                    k -= 1
 
         return closest
 
