@@ -4,36 +4,35 @@ class Solution:
     def minOperations(self, nums: List[int], x: int) -> int:
         
         total = sum(nums)
-        if total == x:
-            return len(nums)
-        
         target = total - x
-
+        if target == 0:
+            return len(nums)
+            
         l= 0
-        r = 0
-        lrSum = nums[0]
+        lrSum = 0
         maxLength = 0
-
-        while r < len(nums):
-            if lrSum == target:
-                length = r - l + 1
-                if length > maxLength:
-                    maxLength = length
-                r += 1
-                lrSum += nums[r] if r < len(nums) else 0
-            elif lrSum < target:
-                r += 1
-                lrSum += nums[r] if r < len(nums) else 0
-            else:
-                lrSum -= nums[l]
-                l += 1
-                if l > r:
-                    r += 1
-                    lrSum += nums[r] if r < len(nums) else 0
+        
+        for r in range(len(nums)):
+            
+            lrSum += nums[r]
+            
+            while l <= r:
+                
+                if lrSum == target:
+                    length = r - l + 1
+                    if length > maxLength:
+                        maxLength = length
+                    break
+                    
+                elif lrSum > target:
+                    lrSum -= nums[l]
+                    l += 1
+                else:
+                    break
 
         return len(nums) - maxLength if maxLength != 0 else -1
 
 s = Solution()
-r = s.minOperations([8828,9581,49,9818,9974,9869,9991,10000,10000,10000,9999,9993,9904,8819,1231,6309], 134365)
+r = s.minOperations([1,1,4,3,2], 5)
 
 print(r)
