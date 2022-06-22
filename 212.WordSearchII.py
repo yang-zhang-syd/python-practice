@@ -74,6 +74,8 @@ class Solution:
             nextNode = node.children[self.trieIndex(c)]
             if nextNode:
                 self.findWord_Recursive(nextNode, board, k, l, result, visitedSet)
+                if nextNode.eow and nextNode.word in result and not any(nextNode.children):
+                    node.children[self.trieIndex(c)] = None
         
         visitedSet.remove(key)
 
@@ -82,7 +84,7 @@ class Solution:
         
 
 s = Solution()
-r = s.findWords([["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], \
-["oath","pea","eat","rain"])
+r = s.findWords([["a","b","c"],["a","e","d"],["a","f","g"]], \
+["abcdefg","gfedcbaaa","eaabcdgfa","befa","dgc","ade"])
 
 print(r)
